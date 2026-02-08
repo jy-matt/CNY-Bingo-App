@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DDG CNY Bingo Roller</title>
+    <style>
+        :root {
+            --bgRed: #a53436;
+            --bgRed2: #a53436;
+
+            --cardBeige: #e6d2a9;
+            --tileBeige: #e9d8b5;
+
+            --ink: #2a1a14;
+            --muted: #5a3c2b;
+
+            --gold: #f2c04a;
+
+            --radiusXL: 28px;
+            --radiusL: 20px;
+            --radiusM: 14px;
+
+            --shadow: 0 7px 15px rgba(0, 0, 0, 0.28);
+            --stroke: 3px;
+
+            --bannerH: 150px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Helvetica, Roboto, Aptos, ui-sans-serif, system-ui, -apple-system, Segoe UI;
+            background:
+                radial-gradient(1000px 600px at 50% -20%, rgba(242, 192, 74, 0.16), transparent 60%),
+                linear-gradient(180deg, var(--bgRed), var(--bgRed2));
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+        }
+
+        /* Wider side panels, slimmer center */
+        .app {
+            width: min(2100px, 100%);
+            margin: 0 auto;
+            padding: 18px;
+            display: grid;
+            grid-template-columns: 1.8fr 0.9fr 1.8fr;
+            /* wider sides */
+            gap: 14px;
+            align-items: stretch;
+            height: 100vh;
+        }
+
+        /* Side panels */
+        .side {
+            border-radius: var(--radiusL);
+            background: rgba(0, 0, 0, 0.10);
+            padding: 10px;
+            box-shadow: var(--shadow);
+            min-height: 0;
+        }
+
+        .sideInner {
+            height: 100%;
+            border-radius: calc(var(--radiusL) - 6px);
+            background: var(--cardBeige);
+            border: var(--stroke) solid rgba(42, 26, 20, 0.55);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .side header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            background: rgba(154, 52, 54, 0.10);
+            border-bottom: var(--stroke) solid rgba(42, 26, 20, 0.25);
+            font-weight: 600;
+            color: var(--bgRed);
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            flex: 0 0 auto;
+        }
+
+        .countPill {
+            font-size: 12px;
+            font-weight: 900;
+            color: var(--ink);
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(242, 192, 74, 0.45);
+            border: 2px solid rgba(42, 26, 20, 0.35);
+        }
+
+        /* Three-column grid lists */
+        .list {
+            padding: 10px;
+            overflow: auto;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            align-content: start;
+        }
+
+        .item {
+            border-radius: var(--radiusM);
+            background: var(--tileBeige);
+            border: 2px solid rgba(42, 26, 20, 0.35);
+            padding: 4px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .thumb {
+            width: 72px;
+            height: 72px;
+            border-radius: 14px;
+            background: transparent;
+            /* no tile bg */
+            border: none;
+            /* remove border */
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            flex: 0 0 auto;
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain
+        }
+
+        /* Wrap titles horizontally (no ellipsis) */
+        .name {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            line-height: 1.15;
+            text-align: center;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            word-break: break-word;
+            max-width: 100%;
+            padding: 0 2px;
+        }
+
+        /* Chrome / Edge / Safari */
+        .list::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.12);
+            border-radius: 999px;
+        }
+
+        .list::-webkit-scrollbar-thumb {
+            background: rgba(242, 192, 74, 0.55);
+            /* gold */
+            border: 3px solid rgba(0, 0, 0, 0.12);
+            /* makes it feel inset */
+            border-radius: 999px;
+        }
+
+        .list::-webkit-scrollbar-thumb:hover {
+            background: rgba(242, 192, 74, 0.72);
+        }
+
+        /* Firefox */
+        .list {
+            scrollbar-width: auto;
+            scrollbar-color: rgba(242, 192, 74, 0.55) rgba(0, 0, 0, 0.12);
+        }
+
+
+        .rollerRow {
+            width: 100%;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* Make the banner behave nicely to the right */
+        .bannerRight {
+            flex: 1 1 auto;
+            min-width: 220px;
+            max-width: 520px;
+            border-radius: 22px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.10);
+            border: var(--stroke) solid rgba(42, 26, 20, 0.55);
+            box-shadow: var(--shadow);
+        }
+
+        /* Banner image fills the panel */
+        .bannerRight img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Ensure bigTile doesn't shrink too much */
+        .bigTile {
+            flex: 0 0 auto;
+        }
+
+        /* Center column — remove beige card background, keep only banner + floating controls */
+        .centerWrap {
+            border-radius: var(--radiusXL);
+            min-width: 500px;
+            background: transparent;
+            /* no panel bg */
+            padding: 0;
+            /* cleaner */
+            box-shadow: none;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 0;
+            align-items: center;
+        }
+
+        .banner {
+            width: 100%;
+            border-radius: var(--radiusXL);
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.10);
+            flex: 0 0 auto;
+            margin: 40px 0px;
+        }
+
+        .banner img {
+            width: 100%;
+            display: block;
+            height: var(--bannerH);
+            object-fit: cover;
+        }
+
+        /* Floating stack: tile + labels + buttons */
+        .rollerStack {
+            width: 100%;
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            padding: 8px 0 0;
+        }
+
+        /* The rolling tile */
+        .bigTile {
+            width: min(360px, 92%);
+            aspect-ratio: 1 / 1;
+            border-radius: 22px;
+            background: var(--tileBeige);
+            border: var(--stroke) solid rgba(42, 26, 20, 0.40);
+            box-shadow:
+                inset 0 0 0 3px rgba(183, 157, 112, 0.65),
+                var(--shadow);
+            display: grid;
+            place-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Make rolling image larger */
+        .bigTile img {
+            width: 98%;
+            height: 98%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.18));
+        }
+
+        /* Folder button inside tile */
+        .folderTileBtn {
+            appearance: none;
+            border-radius: 18px;
+            padding: 16px 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            border: 3px solid rgba(42, 26, 20, 0.45);
+            background: linear-gradient(180deg, rgba(242, 192, 74, 0.72), rgba(242, 192, 74, 0.45));
+            color: var(--ink);
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+            transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .folderTileBtn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.03);
+        }
+
+        .folderTileBtn:active {
+            transform: translateY(0px) scale(0.99);
+        }
+
+        /* Center labels must contrast with red BG */
+        .bigName {
+            font-weight: 600;
+            font-size: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+            text-align: center;
+            color: var(--gold);
+            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.20);
+            min-height: 28px;
+            margin-top: 20px;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.80);
+            font-weight: 800;
+            text-align: center;
+            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+            max-width: 440px;
+            min-height: 16px;
+        }
+
+        .controls {
+            margin-top: 4px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button.btn {
+            appearance: none;
+            border-radius: 999px;
+            padding: 12px 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            border: 3px solid rgba(42, 26, 20, 0.45);
+            background: rgba(242, 192, 74, 0.60);
+            color: var(--ink);
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.20);
+            transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+            user-select: none;
+        }
+
+        button.btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.03);
+        }
+
+        button.btn:active {
+            transform: translateY(0px) scale(0.99);
+        }
+
+        button.btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btnSecondary {
+            background: rgba(255, 255, 255, 0.14) !important;
+            color: rgba(255, 255, 255, 0.92);
+            border-color: rgba(0, 0, 0, 0.20);
+        }
+
+        /* Flash + ring */
+        .flash {
+            animation: flash 560ms ease-in-out;
+        }
+
+        @keyframes flash {
+            0% {
+                filter: brightness(1)
+            }
+
+            20% {
+                filter: brightness(1.25)
+            }
+
+            45% {
+                filter: brightness(1.05)
+            }
+
+            70% {
+                filter: brightness(1.22)
+            }
+
+            100% {
+                filter: brightness(1)
+            }
+        }
+
+        .ring::after {
+            content: "";
+            position: absolute;
+            inset: -10px;
+            border-radius: 28px;
+            border: 4px solid rgba(242, 192, 74, 0);
+            animation: ring 560ms ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ring {
+            0% {
+                transform: scale(0.96);
+                border-color: rgba(242, 192, 74, 0.0);
+                opacity: 0
+            }
+
+            20% {
+                border-color: rgba(242, 192, 74, 0.95);
+                opacity: 1
+            }
+
+            100% {
+                transform: scale(1.06);
+                border-color: rgba(242, 192, 74, 0.0);
+                opacity: 0
+            }
+        }
+
+        canvas#fx {
+            position: fixed;
+            /* was absolute */
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 5000;
+            /* above UI, below tooltip (tooltip is 9999) */
+        }
+
+
+        .footer {
+            font-size: 12px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.80);
+            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+            text-align: center;
+            margin-top: 6px;
+            min-height: 16px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 980px) {
+            .app {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .banner img {
+                height: 140px;
+            }
+
+            .list {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+            .centerWrap {
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .list {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        .iconTooltip {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(12px, 12px);
+
+            background: var(--tileBeige);
+            border: 3px solid rgba(42, 26, 20, 0.45);
+            border-radius: 16px;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+
+            padding: 10px;
+            display: grid;
+            gap: 8px;
+            width: 500px;
+        }
+
+        .iconTooltip img {
+            width: 100%;
+            height: 480px;
+            object-fit: contain;
+            display: block;
+        }
+
+        #iconTooltipName {
+            font-weight: 1000;
+            font-size: 18px;
+            line-height: 1.2;
+            text-align: center;
+            color: var(--ink);
+        }
+    </style>
+</head>
+
+<div id="iconTooltip" class="iconTooltip hidden" role="tooltip" aria-hidden="true">
+    <img id="iconTooltipImg" alt="">
+    <div id="iconTooltipName"></div>
+</div>
+
+<body>
+    <div class="app">
+        <!-- LEFT -->
+        <section class="side" aria-label="Rolled icons">
+            <div class="sideInner">
+                <header>
+                    <div>Rolled</div>
+                    <div class="countPill" id="rolledCount">0</div>
+                </header>
+                <div class="list" id="rolledList"></div>
+            </div>
+        </section>
+
+        <!-- CENTER -->
+        <section class="centerWrap" aria-label="Roller">
+
+
+            <div class="rollerStack">
+                <canvas id="fx"></canvas>
+
+                <div class="banner">
+                    <img id="bannerImg" src="./header.png" alt="DDG CNY Bingo" onerror="this.style.display='none'">
+                </div>
+
+                <div class="bigTile" id="bigTile">
+                    <button class="folderTileBtn" id="pickFolderBtn" type="button">
+                        <span style="font-size:18px;">📁</span>
+                        <span>Choose Icons Folder</span>
+                    </button>
+                    <img id="bigIcon" class="hidden" alt="Selected icon" />
+                </div>
+
+                <div class="bigName" id="bigName">Choose your icons folder</div>
+                <div class="hint" id="hint"></div>
+
+                <div class="controls">
+                    <button class="btn" id="rollBtn" disabled>🎲 Roll</button>
+                    <button class="btn btnSecondary" id="resetBtn" disabled>↺ Reset</button>
+                </div>
+
+                <div class="footer" id="footer"></div>
+            </div>
+        </section>
+
+        <!-- RIGHT -->
+        <section class="side" aria-label="Remaining icons">
+            <div class="sideInner">
+                <header>
+                    <div>Remaining</div>
+                    <div class="countPill" id="remainCount">0</div>
+                </header>
+                <div class="list" id="remainList"></div>
+            </div>
+        </section>
+    </div>
+
+    <script src="./icons/manifest.js"></script>
+    <script>
+        const ICON_EXTS = new Set(["png", "jpg", "jpeg", "webp", "svg"]);
+
+        function prettyNameFromFile(file) {
+            const base = file.replace(/\.[^.]+$/, "");
+            return base
+                .replace(/[_-]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        function loadIconsFromManifestJs() {
+            const files = window.CNY_ICON_FILES ?? [];
+            if (!files.length) throw new Error("CNY_ICON_FILES missing/empty. Did you generate icons/manifest.js?");
+
+            return files.map(name => ({
+                file: name,
+                name: prettyNameFromFile(name),   // uses your existing prettifier
+                url: `./icons/${name}`            // local reference like header.png
+            }));
+        }
+
+
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = (Math.random() * (i + 1)) | 0;
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+        function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+        function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+        function el(tag, attrs = {}, children = []) {
+            const node = document.createElement(tag);
+            for (const [k, v] of Object.entries(attrs)) {
+                if (k === "class") node.className = v;
+                else if (k === "text") node.textContent = v;
+                else node.setAttribute(k, v);
+            }
+            for (const ch of children) node.appendChild(ch);
+            return node;
+        }
+
+        let icons = [];
+        let remaining = [];
+        let rolled = [];
+        let rolling = false;
+
+        const pickFolderBtn = document.getElementById("pickFolderBtn");
+        const rollBtn = document.getElementById("rollBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const rolledList = document.getElementById("rolledList");
+        const remainList = document.getElementById("remainList");
+        const rolledCount = document.getElementById("rolledCount");
+        const remainCount = document.getElementById("remainCount");
+        const bigIcon = document.getElementById("bigIcon");
+        const bigName = document.getElementById("bigName");
+        const hint = document.getElementById("hint");
+        const bigTile = document.getElementById("bigTile");
+        const footer = document.getElementById("footer");
+
+        /* ---- Fireworks ---- */
+        const canvas = document.getElementById("fx");
+        const ctx = canvas.getContext("2d");
+        let fxParticles = [];
+        let fxRunning = false;
+
+        function resizeCanvas() {
+            canvas.width = Math.floor(window.innerWidth * devicePixelRatio);
+            canvas.height = Math.floor(window.innerHeight * devicePixelRatio);
+            ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        (async function init() {
+            try {
+                icons = loadIconsFromManifestJs();
+                resetAll();
+                // Hide folder chooser UI
+                if (pickFolderBtn) pickFolderBtn.classList.add("hidden");
+
+                bigName.textContent = "Ready";
+                if (hint) hint.textContent = "";
+
+                rollBtn.disabled = false;
+                resetBtn.disabled = false;
+
+            } catch (e) {
+                console.error(e);
+                bigName.textContent = "Icons not found";
+                if (hint) hint.textContent = "Missing ./icons/manifest.json or icons folder.";
+                rollBtn.disabled = true;
+                resetBtn.disabled = true;
+            }
+        })();
+
+
+        function spawnFireworkBurst(x, y, { count = 140, speedMin = 3.5, speedMax = 9.0, lifeMin = 900, lifeMax = 1600, sizeMin = 2.6, sizeMax = 5.2 } = {}) {
+            for (let i = 0; i < count; i++) {
+                const ang = Math.random() * Math.PI * 2;
+                const spd = speedMin + Math.random() * (speedMax - speedMin);
+                const life = lifeMin + Math.random() * (lifeMax - lifeMin);
+
+                fxParticles.push({
+                    x, y,
+                    vx: Math.cos(ang) * spd,
+                    vy: Math.sin(ang) * spd,
+                    g: 0.045 + Math.random() * 0.03,
+                    r: sizeMin + Math.random() * (sizeMax - sizeMin),
+                    birth: performance.now(),
+                    life,
+                    hue: Math.random() * 360,
+                    alpha: 1,
+
+                    // slight confetti drift / wobble
+                    wobble: Math.random() * Math.PI * 2,
+                    wobbleSpd: 0.06 + Math.random() * 0.08
+                });
+            }
+        }
+
+
+        function runFx() {
+            if (fxRunning) return;
+            fxRunning = true;
+            const start = performance.now();
+
+            const tick = (now) => {
+                const rect = canvas.getBoundingClientRect();
+                ctx.clearRect(0, 0, rect.width, rect.height);
+
+                const elapsed = now - start;
+                const globalFade = 1 - clamp((elapsed - 200) / 1200, 0, 1);
+
+                for (let i = fxParticles.length - 1; i >= 0; i--) {
+                    const p = fxParticles[i];
+                    const age = now - p.birth;
+                    const t = age / p.life;
+
+                    if (t >= 1 || globalFade <= 0) {
+                        fxParticles.splice(i, 1);
+                        continue;
+                    }
+
+                    p.wobble += p.wobbleSpd;
+                    p.vy += p.g;
+
+                    // gentle sideways wobble + slight air drag
+                    p.vx *= 0.992;
+                    p.vy *= 0.995;
+
+                    p.x += p.vx + Math.sin(p.wobble) * 0.35;
+                    p.y += p.vy;
+
+                    p.alpha = (1 - t) * globalFade;
+
+                    ctx.beginPath();
+                    ctx.fillStyle = `hsla(${p.hue}, 95%, 60%, ${p.alpha})`;
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                if (fxParticles.length > 0 && globalFade > 0) {
+                    requestAnimationFrame(tick);
+                } else {
+                    fxRunning = false;
+                }
+            };
+            requestAnimationFrame(tick);
+        }
+
+        function renderItem(it) {
+            const img = el("img", { src: it.url, alt: it.name });
+            const thumb = el("div", { class: "thumb" }, [img]);
+            const title = el("div", { class: "name", text: it.name });
+
+            const item = el("div", { class: "item" }, [thumb, title]);
+            item.dataset.tooltipSrc = it.url;
+            item.dataset.tooltipName = it.name;
+            return item;
+        }
+
+
+        function renderLists() {
+            rolledList.innerHTML = "";
+            remainList.innerHTML = "";
+
+            rolledCount.textContent = `${rolled.length}`;
+            remainCount.textContent = `${remaining.length}`;
+
+            for (const it of rolled) rolledList.appendChild(renderItem(it));
+            for (const it of remaining) remainList.appendChild(renderItem(it));
+
+            footer.textContent = remaining.length === 0 ? "All icons rolled!" : "";
+        }
+
+        function setBig(it) {
+            if (!it) {
+                bigIcon.classList.add("hidden");
+                bigIcon.removeAttribute("src");
+                bigName.textContent = "Ready";
+                return;
+            }
+            bigIcon.src = it.url;
+            bigIcon.alt = it.name;
+            bigIcon.classList.remove("hidden");
+            bigName.textContent = it.name;
+        }
+
+        async function rollOnce() {
+            if (rolling || remaining.length === 0) return;
+
+            rolling = true;
+            rollBtn.disabled = true;
+            resetBtn.disabled = true;
+
+            const pool = remaining.slice();
+            const totalMs = 3800;
+            const minInterval = 40;
+            const maxInterval = 260;
+
+            const t0 = performance.now();
+            let lastSwap = t0;
+            let current = pool[(Math.random() * pool.length) | 0];
+
+            if (bigIcon.classList.contains("hidden")) bigIcon.classList.remove("hidden");
+            setBig(current);
+
+            while (true) {
+                const now = performance.now();
+                const elapsed = now - t0;
+                const p = clamp(elapsed / totalMs, 0, 1);
+                const eased = easeOutCubic(p);
+                const interval = minInterval + (maxInterval - minInterval) * eased;
+
+                if (now - lastSwap >= interval) {
+                    current = pool[(Math.random() * pool.length) | 0];
+                    setBig(current);
+                    lastSwap = now;
+                }
+                if (elapsed >= totalMs) break;
+                await new Promise(requestAnimationFrame);
+            }
+
+            const finalIndex = (Math.random() * remaining.length) | 0;
+            const picked = remaining.splice(finalIndex, 1)[0];
+            rolled.unshift(picked);
+
+            setBig(picked);
+
+            bigTile.classList.remove("flash", "ring");
+            void bigTile.offsetWidth;
+            bigTile.classList.add("flash", "ring");
+
+            resizeCanvas();
+            const rect = bigTile.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;   // viewport coords
+            const cy = rect.top + rect.height / 2;  // viewport coords
+
+            // Full-screen dimensions
+            const W = window.innerWidth;
+            const H = window.innerHeight;
+
+
+            // 1) A strong center cluster around the tile
+            spawnFireworkBurst(cx, cy, { count: 180, speedMin: 4, speedMax: 10, sizeMin: 3, sizeMax: 6 });
+            spawnFireworkBurst(cx - rect.width * 0.25, cy + rect.height * 0.15, { count: 140 });
+            spawnFireworkBurst(cx + rect.width * 0.25, cy - rect.height * 0.10, { count: 140 });
+
+            // 2) Screen-filling bursts (top half / mid)
+            const bursts = 7; // increase to 9–11 if you want *more*
+            for (let i = 0; i < bursts; i++) {
+                const x = (0.15 + Math.random() * 0.70) * W;          // 15%–85% width
+                const y = (0.10 + Math.random() * 0.45) * H;          // top ~55% of screen
+                spawnFireworkBurst(x, y, { count: 120, speedMin: 3.8, speedMax: 9.5, sizeMin: 2.6, sizeMax: 5.4 });
+            }
+
+            runFx();
+
+
+            renderLists();
+
+            rolling = false;
+            rollBtn.disabled = (remaining.length === 0);
+            resetBtn.disabled = false;
+        }
+
+        function resetAll() {
+            remaining = shuffle(icons);
+            rolled = [];
+            setBig(null);
+            renderLists();
+            rollBtn.disabled = (remaining.length === 0);
+        }
+
+        async function pickFolder() {
+            if (!window.showDirectoryPicker) {
+                bigName.textContent = "Folder picking not supported";
+                hint.textContent = "Use Chrome/Edge, or I can provide a fallback.";
+                return;
+            }
+
+            try {
+                const dir = await window.showDirectoryPicker();
+                const loaded = [];
+
+                for await (const entry of dir.values()) {
+                    if (entry.kind !== "file") continue;
+                    const name = entry.name;
+                    const ext = name.split(".").pop().toLowerCase();
+                    if (!ICON_EXTS.has(ext)) continue;
+
+                    const file = await entry.getFile();
+                    const url = URL.createObjectURL(file);
+
+                    loaded.push({
+                        file: name,
+                        name: prettyNameFromFile(name),
+                        url
+                    });
+                }
+
+                loaded.sort((a, b) => a.file.localeCompare(b.file, undefined, { numeric: true }));
+
+                if (loaded.length === 0) {
+                    bigName.textContent = "No images found";
+                    hint.textContent = "Choose a folder containing png/jpg/webp/svg files.";
+                    return;
+                }
+
+                for (const it of icons) {
+                    try { URL.revokeObjectURL(it.url); } catch { }
+                }
+
+                icons = loaded;
+                resetAll();
+
+                pickFolderBtn.classList.add("hidden");
+                bigName.textContent = "Ready";
+                hint.textContent = "";
+
+                rollBtn.disabled = false;
+                resetBtn.disabled = false;
+
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        pickFolderBtn.addEventListener("click", pickFolder);
+        rollBtn.addEventListener("click", rollOnce);
+        resetBtn.addEventListener("click", resetAll);
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === " " || e.key === "Enter") {
+                e.preventDefault();
+                if (!rollBtn.disabled) rollOnce();
+            }
+        });
+
+        const tooltip = document.getElementById("iconTooltip");
+        const tooltipImg = document.getElementById("iconTooltipImg");
+        const tooltipName = document.getElementById("iconTooltipName");
+
+        // Only show tooltips for items inside the side lists
+        const hoverRoots = [rolledList, remainList];
+
+        function showTooltip(src, name) {
+            tooltipImg.src = src;
+            tooltipImg.alt = name;
+            tooltipName.textContent = name;
+            tooltip.classList.remove("hidden");
+            tooltip.setAttribute("aria-hidden", "false");
+        }
+
+        function hideTooltip() {
+            tooltip.classList.add("hidden");
+            tooltip.setAttribute("aria-hidden", "true");
+            // Optional: clear src to stop decoding work if you move fast
+            tooltipImg.removeAttribute("src");
+        }
+
+        function positionTooltip(clientX, clientY) {
+            const pad = 14;
+
+            // Default position near cursor
+            let x = clientX + 14;
+            let y = clientY + 14;
+
+            // Keep inside viewport
+            const w = tooltip.offsetWidth || 220;
+            const h = tooltip.offsetHeight || 240;
+            const maxX = window.innerWidth - w - pad;
+            const maxY = window.innerHeight - h - pad;
+
+            x = Math.max(pad, Math.min(x, maxX));
+            y = Math.max(pad, Math.min(y, maxY));
+
+            tooltip.style.left = x + "px";
+            tooltip.style.top = y + "px";
+        }
+
+        function attachTooltipDelegation(root) {
+            root.addEventListener("mousemove", (e) => {
+                const item = e.target.closest(".item");
+                if (!item || !root.contains(item)) return;
+
+                const src = item.dataset.tooltipSrc;
+                const name = item.dataset.tooltipName;
+                if (!src || !name) return;
+
+                // If tooltip hidden, show it
+                if (tooltip.classList.contains("hidden")) {
+                    showTooltip(src, name);
+                } else {
+                    // If hovering a different item, update content
+                    if (tooltipImg.src !== src) {
+                        tooltipImg.src = src;
+                        tooltipImg.alt = name;
+                        tooltipName.textContent = name;
+                    }
+                }
+
+                positionTooltip(e.clientX, e.clientY);
+            });
+
+            root.addEventListener("mouseleave", hideTooltip);
+
+            // If you scroll inside the list, hide tooltip (prevents weird “floating”)
+            root.addEventListener("scroll", hideTooltip, { passive: true });
+        }
+
+        hoverRoots.forEach(attachTooltipDelegation);
+
+    </script>
+</body>
+
+</html>
