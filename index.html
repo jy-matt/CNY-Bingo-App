@@ -5,7 +5,34 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>DDG CNY Bingo Roller</title>
+    <link rel="stylesheet" href="https://use.typekit.net/oxu6kow.css">
+
+    <script>
+    (function(d) {
+        var config = {
+        kitId: 'oxu6kow',
+        scriptTimeout: 3000,
+        async: true
+        },
+        h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+    </script>
+
+    <script>
+    (function(d) {
+        var config = {
+        kitId: 'oxu6kow',
+        scriptTimeout: 3000,
+        async: true
+        },
+        h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);
+    </script>
+
+
+
     <style>
+
         :root {
             --bgRed: #a53436;
             --bgRed2: #a53436;
@@ -34,7 +61,7 @@
 
         body {
             margin: 0;
-            font-family: Helvetica, Roboto, Aptos, ui-sans-serif, system-ui, -apple-system, Segoe UI;
+            font-family: "clother", "m-kai-prc", ui-sans-serif, system-ui, -apple-system, Segoe UI;
             background:
                 radial-gradient(1000px 600px at 50% -20%, rgba(242, 192, 74, 0.16), transparent 60%),
                 linear-gradient(180deg, var(--bgRed), var(--bgRed2));
@@ -78,23 +105,23 @@
         }
 
         .side header {
+            font-family: "brushtones", sans-serif;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 14px;
             background: rgba(154, 52, 54, 0.10);
             border-bottom: var(--stroke) solid rgba(42, 26, 20, 0.25);
-            font-weight: 600;
             color: var(--bgRed);
-            font-size: 22px;
+            font-size: 40px;
             text-transform: uppercase;
             letter-spacing: 0.3px;
             flex: 0 0 auto;
         }
 
         .countPill {
-            font-size: 12px;
-            font-weight: 900;
+            font-family: "brushtones", sans-serif;
+            font-size: 24px;
             color: var(--ink);
             padding: 6px 10px;
             border-radius: 999px;
@@ -126,8 +153,8 @@
         }
 
         .thumb {
-            width: 72px;
-            height: 72px;
+            width: 100px;
+            height: 100px;
             border-radius: 14px;
             background: transparent;
             /* no tile bg */
@@ -148,7 +175,6 @@
         /* Wrap titles horizontally (no ellipsis) */
         .name {
             font-size: 14px;
-            font-weight: 600;
             text-transform: uppercase;
             line-height: 1.15;
             text-align: center;
@@ -298,7 +324,6 @@
             appearance: none;
             border-radius: 18px;
             padding: 16px 18px;
-            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.2px;
             cursor: pointer;
@@ -323,8 +348,8 @@
 
         /* Center labels must contrast with red BG */
         .bigName {
-            font-weight: 600;
-            font-size: 30px;
+            font-family: "brushtones", sans-serif;
+            font-size: 50px;
             text-transform: uppercase;
             letter-spacing: 0.2px;
             text-align: center;
@@ -335,9 +360,8 @@
         }
 
         .hint {
-            font-size: 12px;
+            font-size: 20px;
             color: rgba(255, 255, 255, 0.80);
-            font-weight: 800;
             text-align: center;
             text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
             max-width: 440px;
@@ -357,7 +381,6 @@
             appearance: none;
             border-radius: 999px;
             padding: 12px 16px;
-            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.2px;
             cursor: pointer;
@@ -459,7 +482,6 @@
 
         .footer {
             font-size: 12px;
-            font-weight: 900;
             color: rgba(255, 255, 255, 0.80);
             text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
             text-align: center;
@@ -522,12 +544,23 @@
         }
 
         #iconTooltipName {
-            font-weight: 1000;
-            font-size: 18px;
+            font-family: "brushtones", sans-serif;
+            font-size: 40px;
             line-height: 1.2;
             text-align: center;
             color: var(--ink);
         }
+
+        .rolled-desc{
+            margin-top: 10px;
+            max-width: 520px;
+            text-align: center;
+            line-height: 1.4;
+            font-size: 24px;
+            color: var(--cardBeige);  /* contrasts on red BG */
+            text-shadow: 0 2px 0 rgba(0,0,0,0.18);
+        }
+
     </style>
 </head>
 
@@ -562,13 +595,14 @@
 
                 <div class="bigTile" id="bigTile">
                     <button class="folderTileBtn" id="pickFolderBtn" type="button">
-                        <span style="font-size:18px;">📁</span>
+                        <span>📁</span>
                         <span>Choose Icons Folder</span>
                     </button>
                     <img id="bigIcon" class="hidden" alt="Selected icon" />
                 </div>
 
                 <div class="bigName" id="bigName">Choose your icons folder</div>
+                <div id="rolledDesc" class="rolled-desc"></div>
                 <div class="hint" id="hint"></div>
 
                 <div class="controls">
@@ -652,6 +686,7 @@
         const remainCount = document.getElementById("remainCount");
         const bigIcon = document.getElementById("bigIcon");
         const bigName = document.getElementById("bigName");
+        const rolledDesc = document.getElementById("rolledDesc");
         const hint = document.getElementById("hint");
         const bigTile = document.getElementById("bigTile");
         const footer = document.getElementById("footer");
@@ -771,9 +806,9 @@
         function renderItem(it) {
             const img = el("img", { src: it.url, alt: it.name });
             const thumb = el("div", { class: "thumb" }, [img]);
-            const title = el("div", { class: "name", text: it.name });
+            //const title = el("div", { class: "name", text: it.name });
 
-            const item = el("div", { class: "item" }, [thumb, title]);
+            const item = el("div", { class: "item" }, [thumb]);
             item.dataset.tooltipSrc = it.url;
             item.dataset.tooltipName = it.name;
             return item;
@@ -798,13 +833,30 @@
                 bigIcon.classList.add("hidden");
                 bigIcon.removeAttribute("src");
                 bigName.textContent = "Ready";
+                updateDescription(null);
                 return;
             }
             bigIcon.src = it.url;
             bigIcon.alt = it.name;
             bigIcon.classList.remove("hidden");
             bigName.textContent = it.name;
+            
         }
+
+        function updateDescription(it){
+            if(!rolledDesc) return;
+
+            if(!it){
+                rolledDesc.textContent = "";
+                return;
+            }
+
+            const map = window.CNY_ICON_DESC_MAP ?? {};
+            const desc = map[it.file] ?? "";
+
+            rolledDesc.textContent = desc;
+        }
+
 
         async function rollOnce() {
             if (rolling || remaining.length === 0) return;
@@ -826,6 +878,7 @@
             setBig(current);
 
             while (true) {
+                updateDescription(null);
                 const now = performance.now();
                 const elapsed = now - t0;
                 const p = clamp(elapsed / totalMs, 0, 1);
@@ -846,6 +899,7 @@
             rolled.unshift(picked);
 
             setBig(picked);
+            updateDescription(picked);
 
             bigTile.classList.remove("flash", "ring");
             void bigTile.offsetWidth;
