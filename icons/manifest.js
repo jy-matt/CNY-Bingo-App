@@ -1,11 +1,11 @@
 ﻿window.CNY_ICON_FILES = ["Abalone.png","Abundance.png","Ang Bao.png","Bai Nian.png","Bak Kwa.png","Cai Shen Ye.png","Calligraphy.png","Chap Chye.png","Chap Goh Mei.png","Cheongsam.png","Chinese Knot.png","Dragon Dance.png","Family.png","Firecrackers.png","Gold Ingots.png","Good Fortune.png","Happiness.png","Harmony.png","Health.png","Kueh Bangkit.png","Kumquat.png","Lion Dance.png","Lohei.png","Longevity.png","Love Letters.png","Luck.png","Mahjong.png","Mandarin Oranges.png","Melon Seeds.png","New Moon.png","Nian Gao.png","Paper Cutting.png","Peach Blossoms.png","Persimmons.png","Phoenix.png","Pineapple Tarts.png","Pineapple.png","Plum Blossoms.png","Pomelo.png","Prawn Rolls.png","Prosperity.png","Red Lanterns.png","Kueh Lapis.png","Reunion Dinner.png","Spring Cleaning.png","Steamboat.png","Steamed Fish.png","Success.png","Wealth.png","Zodiac Horse.png"];
 
 window.CNY_ICON_DESCS = [
-  ["Abalone.png", "A luxury ingredient often served at New Year feasts, symbolising wealth, success, and a year of “upgrades.”"],
+  ["Abalone.png", "A luxury ingredient often served at New Year feasts, symbolising wealth and success."],
   ["Abundance.png", "Fish (鱼, yú) sounds like “surplus” - the commonly wished proverb 年年有余 (nian nian you yu) means 'may you have abundance every year.'"],
   ["Ang Bao.png", "Red packets with money given as blessings for good luck, prosperity, and protection — especially to children and juniors."],
   ["Bai Nian.png", "The CNY tradition of visiting others to exchange greetings, good wishes, and snacks (lots of snacks)."],
-  ["Bak Kwa.png", "Sweet barbecued pork jerky — a modern CNY favourite that signals celebration and indulgence."],
+  ["Bak Kwa.png", "Sweet barbecued pork jerky — a modern CNY favourite that signals celebration and indulgence. Halal friends can try chicken or beef bak kwa!"],
   ["Cai Shen Ye.png", "The God of Wealth (财神爷), welcomed at the start of the new year to bring financial luck and prosperity."],
   ["Calligraphy.png", "The 福 (fu, “good fortune”) character on a red diamond; often hung upside-down so “fortune arrives” — “fu dao” sounds like “fortune has come”."],
   ["Chap Chye.png", "A homestyle mixed-vegetable dish often eaten for a fresh, balanced start to the new year."],
